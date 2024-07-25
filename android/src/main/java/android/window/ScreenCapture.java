@@ -53,6 +53,11 @@ public class ScreenCapture {
 
             }
 
+            public Builder setSize(int width, int height) {
+
+                return this;
+            }
+
         }
     }
 

@@ -12,11 +12,11 @@ import android.view.Display;
 import android.view.SurfaceControl;
 import android.window.ScreenCapture;
 
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-
 import android.view.WindowManagerGlobal;
 import android.window.ScreenCapture.SynchronousScreenCaptureListener;
+
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 
 public class Main {
@@ -30,13 +30,21 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        Bitmap bitmap = takeScreenshot();
-        OutputStream outputStream = new FileOutputStream("/sdcard/1.png");
-        bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream);
-        outputStream.close();
+        long b = System.currentTimeMillis();
+        for (int i = 0; i < 100; i++) {
+            long s = System.currentTimeMillis();
+            Bitmap bitmap = takeScreenshot();
+            bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / 2, bitmap.getHeight() / 2, true);
+            long e = System.currentTimeMillis();
+            System.err.println("cost: " + (e - s));
+//            OutputStream outputStream = new FileOutputStream("/sdcard/1.jpg");
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, outputStream);
+//            outputStream.close();
+        }
+        System.err.println(System.currentTimeMillis() - b);
     }
 
-    static Bitmap takeScreenshot() {
+    public static Bitmap takeScreenshot() {
         final int SDK_INT = SystemProperties.getInt(
                 "ro.build.version.sdk", 0);
 

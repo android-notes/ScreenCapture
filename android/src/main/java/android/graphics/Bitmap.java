@@ -7,6 +7,11 @@ public class Bitmap {
         return null;
     }
 
+    public static Bitmap createScaledBitmap(Bitmap src, int dstWidth, int dstHeight,
+                                            boolean filter) {
+        throw new RuntimeException();
+    }
+
     public void setHasAlpha(boolean b) {
 
     }
@@ -49,6 +54,7 @@ public class Bitmap {
 
     public enum Config {
 
-        ARGB_8888
+        ARGB_8888,
+        RGB_565
     }
 }
