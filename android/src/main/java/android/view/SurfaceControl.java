@@ -10,7 +10,13 @@ public class SurfaceControl {
     }
 
     public static ScreenshotHardwareBuffer captureDisplay(DisplayCaptureArgs captureArgs) {
-        return null;
+        throw new RuntimeException();
+    }
+
+    public static class Transaction {
+        public static IBinder getDefaultApplyToken() {
+            throw new RuntimeException();
+        }
     }
 
     public static Bitmap screenshot(Rect crop, int displayWidth, int displayHeight, int rotation) {

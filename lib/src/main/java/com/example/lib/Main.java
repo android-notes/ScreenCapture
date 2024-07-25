@@ -6,12 +6,17 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.display.DisplayManagerGlobal;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.view.Display;
 import android.view.SurfaceControl;
+import android.window.ScreenCapture;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+
+import android.view.WindowManagerGlobal;
+import android.window.ScreenCapture.SynchronousScreenCaptureListener;
 
 
 public class Main {
@@ -34,7 +39,27 @@ public class Main {
     static Bitmap takeScreenshot() {
         final int SDK_INT = SystemProperties.getInt(
                 "ro.build.version.sdk", 0);
-        if (SDK_INT >= 31) {
+
+        if (SDK_INT >= 34) {
+            // Take the screenshot
+            final SynchronousScreenCaptureListener syncScreenCapture =
+                    ScreenCapture.createSyncCaptureListener();
+            try {
+                WindowManagerGlobal.getWindowManagerService().captureDisplay(Display.DEFAULT_DISPLAY, null,
+                        syncScreenCapture);
+            } catch (RemoteException e) {
+                System.err.println("Failed to take fullscreen screenshot" + e);
+            }
+            final ScreenCapture.ScreenshotHardwareBuffer screenshotBuffer = syncScreenCapture.getBuffer();
+            final Bitmap screenShot = screenshotBuffer == null ? null : screenshotBuffer.asBitmap();
+            if (screenShot == null) {
+                System.err.println("Failed to take fullscreen screenshot");
+                return null;
+            }
+            // Optimization
+            screenShot.setHasAlpha(false);
+            return screenShot;
+        } else if (SDK_INT >= 31) {
             // Take the screenshot
             final IBinder displayToken = SurfaceControl.getInternalDisplayToken();
             final SurfaceControl.DisplayCaptureArgs captureArgs =
